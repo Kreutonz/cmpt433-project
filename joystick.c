@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-#include "joystick.h"
 #include "general.h"
-#include "musicHandler.h"
+#include "joystick.h"
+#include "segDisplay.h"
+#include "timeController.h"
 
 #define JOYSTICK_PIN_CONFIGURE_UP "config-pin p8.14 gpio"
 #define JOYSTICK_PIN_CONFIGURE_RIGHT "config-pin p8.15 gpio"
@@ -65,20 +66,34 @@ static void* readJoystick(void* args) {
         int leftValue = General_readIntegerFromFile(JOYSTICK_LEFT_VALUE);
         int pushValue = General_readIntegerFromFile(JOYSTICK_PUSH_VALUE);
 
+
         if(upValue == 0){
-            MusicHandler_setVolume(INCREASE);
+            printf("[TODO] MINUTES...\n");
+            // display mins
+            SegDisplay_setDisplayMode(MINUTES);
+            // if alarm activated --> snooze
         }
         if(rightValue == 0){
-            MusicHandler_setTempo(INCREASE);
+            printf("[TODO] SECONDS...\n");
+            // display seconds
+            SegDisplay_setDisplayMode(SECONDS);
+            // if alarm activated --> snooze
         }
         if(downValue == 0){
-            MusicHandler_setVolume(DECREASE);
+            printf("[TODO] ALL...\n");
+            // ALL
+            SegDisplay_setDisplayMode(ALL);
+            // if alarm activated --> snooze
         }
         if(leftValue == 0){
-            MusicHandler_setTempo(DECREASE);
+            printf("[TODO] HOURS...\n");
+            // display hours
+            SegDisplay_setDisplayMode(HOURS);
+            // if alarm activated --> snooze
         }
         if(pushValue == 0){
-            MusicHandler_nextBeatMode();
+            printf("[TODO] SHUTOFF ALARM...\n");
+            // if alarm activated --> shutoff alarm
         }
 
         General_sleepForMs(MS_BETWEEN_READS);
