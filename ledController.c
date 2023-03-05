@@ -13,7 +13,6 @@
 #define brightness3 "/sys/class/leds/beaglebone:green:usr2/brightness"
 #define trigger4 "/sys/class/leds/beaglebone:green:usr3/trigger"
 #define brightness4 "/sys/class/leds/beaglebone:green:usr3/brightness"
-#define MAX_LENGTH_OF_STRING 1024
 
 // *********************
 // PROTOTYPES (PRIVATE)
@@ -21,12 +20,44 @@
 
 void initLeds();
 
+//**************************
+//    FUNCTIONS (PRIVATE)
+//**************************
 
-// Set all the triggers to none
 void initLeds() {
    General_runCommand("echo none > " trigger1);
    General_runCommand("echo none > " trigger2);
    General_runCommand("echo none > " trigger3);
    General_runCommand("echo none > " trigger4);
 }
+
+
+//**************************
+//    FUNCTIONS (PUBLIC)
+//**************************
+
+void LedController_init(void) {
+   initLeds();
+} // LedController_init()
+
+void LedController_shutDown(void) {
+   LedController_turnAllLightsOff();
+   initLeds();
+} // LedController_shutDown()
+
+
+void LedController_turnAllLightsOff(void) {
+   General_runCommand("echo 0 > " brightness1);
+   General_runCommand("echo 0 > " brightness2);
+   General_runCommand("echo 0 > " brightness3);
+   General_runCommand("echo 0 > " brightness4);
+} // LedController_turnAllLightsOff()
+
+
+void LedController_turnAllLightsOn(void) {
+   General_runCommand("echo 1 > " brightness1);
+   General_runCommand("echo 1 > " brightness2);
+   General_runCommand("echo 1 > " brightness3);
+   General_runCommand("echo 1 > " brightness4);
+} // LedController_turnAllLightsOn()
 
