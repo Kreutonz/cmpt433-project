@@ -7,6 +7,7 @@
 #include "segDisplay.h"
 #include "timeController.h"
 #include "udp.h"
+#include "ledController.h"
 
 
 //***************************
@@ -33,18 +34,19 @@ int main(void) {
 //***************************
 
 static void init(void) {
-    TimeController_init();
-    SegDisplay_init();
-    Joystick_init();
-    UDP_init();
+    // TimeController_init();
+    // SegDisplay_init();
+    // Joystick_init();
+    // UDP_init();
+    printf("Hi\n");
 }// init()
 
 
 static void shutdown(void) {
-    UDP_shutdown();
-    Joystick_shutdown();
-    SegDisplay_shutdown();
-    TimeController_shutdown();
+    // UDP_shutdown();
+    // Joystick_shutdown();
+    // SegDisplay_shutdown();
+    // TimeController_shutdown();
 }// shutdown()
 
 
