@@ -1,6 +1,5 @@
 // [SOURCE]: getting time in C: https://stackoverflow.com/questions/5141960/get-the-current-time-in-c
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -12,8 +11,6 @@
 
 #define MS_BETWEEN_ALARM_CHECKS 500
 #define MS_BETWEEN_SETTING_TIME 500
-#define SET_TIMEZONE_CMD "timedatectl set-timezone America/Vancouver"
-
 
 static pthread_mutex_t timeMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_t timeThreadID;
@@ -34,8 +31,6 @@ static int currentSeconds;
 
 static void* checkAlarm(void* args);
 static void* setTimeInfo(void* args);
-static void setTimezone(void);
-
 
 //**************************
 //    FUNCTIONS (PRIVATE)
@@ -74,12 +69,6 @@ static void* setTimeInfo(void* args) {
 
     return NULL;
 }// setTimeInfo()
-
-
-static void setTimezone(void) {
-    printf("[INFO] setting default timezone to 'America/Vancouver'\n");
-    General_runCommand(SET_TIMEZONE_CMD);
-}// setTimeZone()
 
 
 //**************************
@@ -132,10 +121,9 @@ int TimeController_getCurrentSeconds(void) {
 
 
 void TimeController_init(void) {
-    setTimezone();
+    time(&currentTime);
     pthread_create(&timeThreadID, NULL, &setTimeInfo, NULL);
     pthread_create(&alarmThreadID, NULL, &checkAlarm, NULL);
-    time(&currentTime);
 
 }// TimeController_init()
 
@@ -149,4 +137,5 @@ void TimeController_setStatus(enum STATUS newStatus) {
 
 void TimeController_shutdown(void) {
     pthread_join(timeThreadID, NULL);
+    pthread_join(alarmThreadID, NULL);
 }// TimeController_shutdown()
