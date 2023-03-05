@@ -34,19 +34,18 @@ int main(void) {
 //***************************
 
 static void init(void) {
-    // TimeController_init();
-    // SegDisplay_init();
-    // Joystick_init();
-    // UDP_init();
-    printf("Hi\n");
+    TimeController_init();
+    SegDisplay_init();
+    Joystick_init();
+    UDP_init();
 }// init()
 
 
 static void shutdown(void) {
-    // UDP_shutdown();
-    // Joystick_shutdown();
-    // SegDisplay_shutdown();
-    // TimeController_shutdown();
+    UDP_shutdown();
+    Joystick_shutdown();
+    SegDisplay_shutdown();
+    TimeController_shutdown();
 }// shutdown()
 
 
