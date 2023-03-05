@@ -66,34 +66,22 @@ static void* readJoystick(void* args) {
         int leftValue = General_readIntegerFromFile(JOYSTICK_LEFT_VALUE);
         int pushValue = General_readIntegerFromFile(JOYSTICK_PUSH_VALUE);
 
-
-        if(upValue == 0){
-            printf("[TODO] MINUTES...\n");
-            // display mins
-            SegDisplay_setDisplayMode(MINUTES);
-            // if alarm activated --> snooze
-        }
-        if(rightValue == 0){
-            printf("[TODO] SECONDS...\n");
-            // display seconds
-            SegDisplay_setDisplayMode(SECONDS);
-            // if alarm activated --> snooze
-        }
-        if(downValue == 0){
-            printf("[TODO] ALL...\n");
-            // ALL
-            SegDisplay_setDisplayMode(ALL);
-            // if alarm activated --> snooze
-        }
-        if(leftValue == 0){
-            printf("[TODO] HOURS...\n");
-            // display hours
+        if(leftValue == 0) {
             SegDisplay_setDisplayMode(HOURS);
-            // if alarm activated --> snooze
-        }
-        if(pushValue == 0){
-            printf("[TODO] SHUTOFF ALARM...\n");
-            // if alarm activated --> shutoff alarm
+            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+        } else if(upValue == 0) {
+            SegDisplay_setDisplayMode(MINUTES);
+            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+        } else if(rightValue == 0) {
+            SegDisplay_setDisplayMode(SECONDS);
+            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+        } else if(downValue == 0) {
+            SegDisplay_setDisplayMode(ALL);
+            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+        } else if(pushValue == 0) {
+            printf("[TODO]: if alarm activated (playing sound) --> SHUTOFF ALARM (setter)\n");
+        } else {
+            SegDisplay_setDisplayMode(ALL);         // idle joystick
         }
 
         General_sleepForMs(MS_BETWEEN_READS);

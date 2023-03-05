@@ -1,11 +1,10 @@
 /* 
 [DESCRIPTION]: 
     - handles setting of pins for joystick input
-    - pressing inwards will cycle through the beats
-    - pressing left decreases tempo
-    - pressing right increases tempo
-    - pressing up increases volume
-    - pressing down decreases volume
+    - pressing inwards will shut off the alarm if active
+    - pressing left/right displays hours
+    - pressing up/down displays minutes
+    - if alarm is active (playing sound), pressing the joystick in any direction (not pushed) will snooze
 */
 
 #ifndef JOYSTICK_H_

@@ -34,7 +34,7 @@
 #define GPIO_VALUE_44 "/sys/class/gpio/gpio44/value"
 
 #define MAX_ATTEMPTS 5
-#define NUM_DIGITS 10
+#define NUM_VALUES 13
 #define MAX_DIGIT_VALUE 9
 #define MAX_DISPLAY_VALUE 99
 #define MIN_DISPLAY_VALUE 0
@@ -42,15 +42,19 @@
 #define ON "1"
 #define OFF "0"
 #define SWITCH_DIGIT_SLEEP_MS 5
-#define DIP_FETCH_INTERVAL_MS 100
+#define TIME_FETCH_INTERVAL_MS 500
+#define DISPLAY_FOR_MS 600
+#define H_CHARACTER_INDEX 10
+#define M_CHARACTER_INDEX 11
+#define DASH_CHARACTER_INDEX 12
 
 //**************************
 //    GLOBAL VARIABLES
 //**************************
 
-// Seg display configuration -- *Bits[]: {0,1,2,3,4,5,6,7,8,9}
-static int upperBits[NUM_DIGITS] = {0x86, 0x02, 0x0e, 0x06, 0x8a, 0x8c, 0x8c, 0x14, 0x8e, 0x8e};
-static int lowerBits[NUM_DIGITS] = {0xa1, 0x80, 0x31, 0xb0, 0x90, 0xb0, 0xb1, 0x02, 0xb1, 0x90};
+// Seg display configuration -- *Bits[]: {0,1,2,3,4,5,6,7,8,9,H,M,-}
+static int upperBits[NUM_VALUES] = {0x86, 0x02, 0x0e, 0x06, 0x8a, 0x8c, 0x8c, 0x14, 0x8e, 0x8e, 0x8a, 0xd2, 0x08};
+static int lowerBits[NUM_VALUES] = {0xa1, 0x80, 0x31, 0xb0, 0x90, 0xb0, 0xb1, 0x02, 0xb1, 0x90, 0x91, 0x81, 0x10};
 static FILE* pFileGpioPin61 = NULL;
 static FILE* pFileGpioPin44 = NULL;
 static pthread_t displayThreadID;
@@ -61,8 +65,8 @@ static enum STATUS status = RUNNING;
 
 static enum DISPLAY_MODE displayMode;
 static int currentDisplayedNumber = 0;
-static int leftDigit = 0;
-static int rightDigit = 0;
+static int leftValue = 0;
+static int rightValue = 0;
 static int i2cFileDesc = -1;
 
 static int hours;
@@ -77,6 +81,7 @@ static void bruteForceConfig(char* command);
 static void configureDigits(void);
 static void config_pins(void);
 static void* display(void* args);
+static void displayWithPrefix(int leftIndex, int rightIndex, int value);
 static void* setDisplayValues(void* args);
 static int initI2cBus(char* bus, int address);
 static void setNumber(int number);
@@ -112,14 +117,14 @@ static void bruteForceConfig(char* command) {
 
 static void configureDigits(void) {
 	if(currentDisplayedNumber > MAX_DISPLAY_VALUE) {
-		leftDigit = MAX_DIGIT_VALUE;
-		rightDigit = MAX_DIGIT_VALUE;
+		leftValue = MAX_DIGIT_VALUE;
+		rightValue = MAX_DIGIT_VALUE;
 	}else if(currentDisplayedNumber < MIN_DISPLAY_VALUE) {
-		leftDigit = MIN_DISPLAY_VALUE;
-		rightDigit = MIN_DISPLAY_VALUE;
+		leftValue = MIN_DISPLAY_VALUE;
+		rightValue = MIN_DISPLAY_VALUE;
 	} else {
-		leftDigit = currentDisplayedNumber / BASE;
-		rightDigit = currentDisplayedNumber % BASE;
+		leftValue = currentDisplayedNumber / BASE;
+		rightValue = currentDisplayedNumber % BASE;
 	}
 }// configureDigits()
 
@@ -162,8 +167,8 @@ static void* display(void* args) {
 		fflush(pFileGpioPin44);
 
 		// 2. Drive I2C GPIO extender to display pattern for left digit (must write to registers 0x14 and 0x15)
-		writeI2cReg(REG_OUTA, lowerBits[leftDigit]);
-		writeI2cReg(REG_OUTB, upperBits[leftDigit]);
+		writeI2cReg(REG_OUTA, lowerBits[leftValue]);
+		writeI2cReg(REG_OUTB, upperBits[leftValue]);
 		
 		// 3. Turn on left digit via GPIO 61 set to a 1. Wait for 5ms
 		fputs(ON, pFileGpioPin61);
@@ -177,8 +182,8 @@ static void* display(void* args) {
 		fflush(pFileGpioPin44);
 
 		// 5. Drive I2C GPIO extender to display pattern for right digit (must write to registers 0x14 and 0x15)
-		writeI2cReg(REG_OUTA, lowerBits[rightDigit]);
-		writeI2cReg(REG_OUTB, upperBits[rightDigit]);
+		writeI2cReg(REG_OUTA, lowerBits[rightValue]);
+		writeI2cReg(REG_OUTB, upperBits[rightValue]);
 
 		// 6. Turn on the right digit via GPIO 44 set to 1. Wait for 5ms
 		fputs(ON, pFileGpioPin44);
@@ -192,13 +197,30 @@ static void* display(void* args) {
 }// display()
 
 
+static void displayWithPrefix(int leftIndex, int rightIndex, int value) {	
+	if(displayMode == ALL) {
+		pthread_mutex_lock(&segDisplayMutex);
+		leftValue = leftIndex;
+		rightValue = rightIndex;
+		pthread_mutex_unlock(&segDisplayMutex);
+		General_sleepForMs(DISPLAY_FOR_MS);
+	} 
+
+	// to speed up switch characters on display, will only display if currentMode is ALL
+	if(displayMode == ALL) {
+		setNumber(value);
+		General_sleepForMs(DISPLAY_FOR_MS);
+	} 
+}// displayWithPrefix()
+
+
 static void* getTimeValues(void* args) {
 	while(status == RUNNING) {
 		hours = TimeController_getCurrentHours();
 		minutes = TimeController_getCurrentMinutes();
 		seconds = TimeController_getCurrentSeconds();
 
-		General_sleepForMs(500);
+		General_sleepForMs(TIME_FETCH_INTERVAL_MS);
 	}
 
 	return NULL;
@@ -207,41 +229,16 @@ static void* getTimeValues(void* args) {
 
 static void* setDisplayValues(void* args) {
 	while(status == RUNNING) {
-
-		printf("[DEBUG] displayMode = %d\n", displayMode);
-
 		if(displayMode == HOURS) {
-			// TODO: set HH for 2 sec
-			// display hour value
 			setNumber(hours);
 		} else if(displayMode == MINUTES) {
-			// TODO: set MM for 2 sec
-			// display minutes
 			setNumber(minutes);
 		} else if(displayMode == SECONDS) {
-			// TODO: set SS for 2 sec
-			// display seconds
 			setNumber(seconds);
 		} else {
-			// will break out of current checks if display mode is not ALL
-			if(displayMode == ALL) {
-				setNumber(hours);
-				General_sleepForMs(500);
-			} 
-
-			if(displayMode == ALL) {
-				setNumber(minutes);
-				General_sleepForMs(500);
-			} 
-
-			if(displayMode == ALL) {
-				setNumber(seconds);
-				General_sleepForMs(500);
-			} 
+			displayWithPrefix(H_CHARACTER_INDEX, DASH_CHARACTER_INDEX, hours);
+			displayWithPrefix(M_CHARACTER_INDEX, DASH_CHARACTER_INDEX, minutes);
 		}
-
-		displayMode = ALL;
-		General_sleepForMs(500);
 	}
 
 	return NULL;
@@ -316,9 +313,7 @@ void SegDisplay_init(void) {
 
 
 void SegDisplay_setDisplayMode(enum DISPLAY_MODE value) {
-	// pthread_mutex_lock(&segDisplayMutex);
-	displayMode = value;
-	// pthread_mutex_unlock(&segDisplayMutex);
+	displayMode = value;		// no mutex, want to switch modes as fast as possible without blocking
 }// SegDisplay_setDisplayMode()
 
 
