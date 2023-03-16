@@ -22,6 +22,15 @@
 #ifndef RESPONSES_H_
 #define RESPONSES_H_
 
+enum ALARM_MODE {
+    DEFAULT1 = 0,
+    DEFAULT2,
+    DEFAULT3,
+    CUSTOM1,
+    CUSTOM2,
+    STOP
+};
+
 char* Responses_handler(char* request, int* length);
 
 #endif 
