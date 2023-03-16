@@ -53,7 +53,7 @@ static bool createReply(struct sockaddr_in sinRemote, unsigned int sin_len, char
     if(length != 0) {
         int responseIndex = 0;
         int packetIndex = 0;
-        
+        //printf("msg: %s\r\n", message);
         while(responseIndex < length) {
             if((packetIndex % MAX_LEN) == 0 && packetIndex != 0) {          // go back and find good place to null terminate
                 int indexParser = MAX_LEN - 1;                              // last index in packet

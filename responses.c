@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #include "responses.h"
-// #include "musicHandler.h"
+ #include "audioControl.h"
 #include "general.h"
 #include "timeController.h"
 
@@ -20,11 +20,7 @@
 //     GLOBAL VARIABLES
 // ****************************
 
-enum ALARM_MODE {
-    DEFAULT1,
-    DEFAULT2,
-    CUSTOM
-};
+
 
 //**************************
 //   PROTOTYPES (PRIVATE)
@@ -57,6 +53,14 @@ static char* stopProgram(void);
 //     return NULL;
 // }// convertAlarmModeToString()
 
+static char* playAlarmSound(enum ALARM_MODE mode) {
+    char* pResponse = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
+
+    SoundHandler_playDefaultSound(mode);
+    snprintf(pResponse, MAX_PACKET_LENGTH_BYTES, "play = %d\n", mode);
+
+    return pResponse;
+}// playAlarmSound()
 
 static char* generateResponse(char* request) {
     char* pResponse;
@@ -75,13 +79,23 @@ static char* generateResponse(char* request) {
     } else if(strcmp(request, "setAlarmModeCustom\n") == 0) {
         // pResponse = setAlarmMode(CUSTOM);
     } else if(strcmp(request, "playDefault1\n") == 0) {             
-        // pResponse = playAlarmSound(DEFAULT1); 
+         pResponse = playAlarmSound(DEFAULT1); 
     } else if(strcmp(request, "playDefault2\n") == 0) {             
-        // pResponse = playAlarmSound(DEFAULT2); 
-    } else if(strcmp(request, "playCustom\n") == 0) {             
-        // pResponse = playAlarmSound(CUSTOM);  
+         pResponse = playAlarmSound(DEFAULT2); 
+    } else if(strcmp(request, "playDefault3\n") == 0) {             
+         pResponse = playAlarmSound(DEFAULT3); 
+    } else if(strcmp(request, "playCustom1\n") == 0) {             
+         pResponse = playAlarmSound(CUSTOM1);  
+    } else if(strcmp(request, "playCustom2\n") == 0) {             
+         pResponse = playAlarmSound(CUSTOM2);  
+    } else if(strcmp(request, "playStop\n") == 0) {             
+         pResponse = playAlarmSound(STOP);  
     } else if(strcmp(request, "terminate\n") == 0) {
         pResponse = stopProgram();                   
+    } else if(strcmp(request, "check") == 0) {
+        char* resp = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
+        sprintf(resp, "bbgdata, %d, %d, %d, %d", 123,AudioMixer_getVolume(),11,33);
+        pResponse = resp;
     } else { 
         pResponse = invalid();
     }
@@ -142,23 +156,6 @@ static char* invalid(void) {
 
     return pResponse;
 }// invalid()
-
-// static char* playAlarmSound(enum ALARM_MODE mode) {
-//     char* pResponse = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
-
-//     if(mode == DEFAULT1) {
-//         SoundHandler_playDefaultSound(DEFAULT1);
-//         snprintf(pResponse, MAX_PACKET_LENGTH_BYTES, "play = DEFAULT1\n");
-//     } else if(mode == DEFAULT2) {
-//         SoundHandler_playDefaultSound(DEFAULT2);
-//         snprintf(pResponse, MAX_PACKET_LENGTH_BYTES, "play = DEFAULT2\n");
-//     } else if(mode == CUSTOM) {
-//         SoundHandler_playDefaultSound(CUSTOM);
-//         snprintf(pResponse, MAX_PACKET_LENGTH_BYTES, "play = CUSTOM\n");
-//     }
-
-//     return pResponse;
-// }// playAlarmSound()
 
 
 static char* stopProgram(void) {
