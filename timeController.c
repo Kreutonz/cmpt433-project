@@ -92,6 +92,13 @@ time_t TimeController_getCurrentTime(void) {
     return time;
 }// TimeController_getCurrentTime()
 
+time_t TimeController_getAlarmTime(void) {
+    pthread_mutex_lock(&alarmMutex);
+    time_t time = alarmTime;
+    pthread_mutex_unlock(&alarmMutex);
+    
+    return time;
+}// TimeController_getAlarmTime()
 
 int TimeController_getCurrentHours(void) {
     pthread_mutex_lock(&timeMutex);

@@ -18,4 +18,10 @@ void TimeController_init(void);
 void TimeController_setStatus(enum STATUS status);
 void TimeController_shutdown(void);
 
+// TODO:
+// void TimeController_setAlarmTime(time_t alarmTime);
+// int TimeController_getAlarmHours(void);
+// int TimeController_getAlarmMinutes(void);
+// time_t TimeController_getAlarmTime(void);
+
 #endif

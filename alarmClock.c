@@ -6,9 +6,9 @@
 #include "joystick.h"
 #include "segDisplay.h"
 #include "timeController.h"
+#include "audioControl.h"
 #include "udp.h"
-#include "ledController.h"
-
+#include "potDriver.h"
 
 //***************************
 //    PRIVATE PROTOTYPES
@@ -35,9 +35,12 @@ int main(void) {
 
 static void init(void) {
     TimeController_init();
+    AudioController_init();
     SegDisplay_init();
     Joystick_init();
+    potDriver_init();
     UDP_init();
+
 }// init()
 
 
@@ -46,6 +49,8 @@ static void shutdown(void) {
     Joystick_shutdown();
     SegDisplay_shutdown();
     TimeController_shutdown();
+    AudioController_shutdown();
+    potDriver_shutdown();
 }// shutdown()
 
 

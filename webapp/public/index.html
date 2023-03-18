@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>BeagleBone Beat-Box</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="style.css" type="text/css">
+	<script src='/socket.io/socket.io.js' type='text/javascript'></script>
+
+	<script src="udp_ui.js" type="text/javascript"></script>
+</head>
+
+<body>
+<header>
+	<h1>Alarm Application</h1>
+</header>
+<form>
+	<div id="content">
+		<div id="left-box">
+			<div id="modediv">
+				<h2>Alarm Tone Selection</h2>
+				<div id="cstatus" >Connection Error</div>
+				<p>
+					<input type="button" id="def1" value="Default Tone 1">
+					<input type="button" id="def2" value="Default Tone 2">
+					<input type="button" id="def3" value="Default Tone 3">
+					<input type="button" id="stop" value="Stop">
+				</p>
+				<div id="custom-box">
+					<h3>Custom Alarms</h3>
+					<p>
+						<input type="button" id="cs1" value = "Custom 1">
+						<input type="button" id="cs2" value = "Custom 2">
+					</p>
+				</div>
+				<div class="container">
+				   <label>Alarm Time:</label>
+					<div class="inputs">
+						<input type="number" id="hourInput" placeholder="00" min="0" max="23" />
+						<input type="number" id="minuteInput" placeholder="00" min="0" max="59"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="error-box">
+			<h2>Server Error</h2>
+			<p>Server error detected. Please resolve error before continuing.</p>
+			<div><code id="error-text">No error yet... did you hide this div correctly via Javascript? :)</code></div>
+		</div>
+
+	</div>
+</form>
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js" type="text/javascript"></script>
+
+</body></html>
+
