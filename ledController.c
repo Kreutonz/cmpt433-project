@@ -13,6 +13,9 @@
 #define brightness3 "/sys/class/leds/beaglebone:green:usr2/brightness"
 #define trigger4 "/sys/class/leds/beaglebone:green:usr3/trigger"
 #define brightness4 "/sys/class/leds/beaglebone:green:usr3/brightness"
+#define triggerForWiredLED1 "/sys/class/leds/leds:P9.23/trigger"
+#define brightnessForWiredLED1 "/sys/class/leds/leds:P9.23/brightness"
+
 
 // *********************
 // PROTOTYPES (PRIVATE)
@@ -29,6 +32,7 @@ void initLeds() {
    General_runCommand("echo none > " trigger2);
    General_runCommand("echo none > " trigger3);
    General_runCommand("echo none > " trigger4);
+   General_runCommand("echo none > " triggerForWiredLED1);
 }
 
 
@@ -41,23 +45,25 @@ void LedController_init(void) {
 } // LedController_init()
 
 void LedController_shutDown(void) {
-   LedController_turnAllLightsOff();
+   LedController_turnAllBBLightsOff();
    initLeds();
 } // LedController_shutDown()
 
 
-void LedController_turnAllLightsOff(void) {
+void LedController_turnAllBBLightsOff(void) {
    General_runCommand("echo 0 > " brightness1);
    General_runCommand("echo 0 > " brightness2);
    General_runCommand("echo 0 > " brightness3);
    General_runCommand("echo 0 > " brightness4);
+   General_runCommand("echo 0 > " brightnessForWiredLED1);
 } // LedController_turnAllLightsOff()
 
 
-void LedController_turnAllLightsOn(void) {
+void LedController_turnAllBBLightsOn(void) {
    General_runCommand("echo 1 > " brightness1);
    General_runCommand("echo 1 > " brightness2);
    General_runCommand("echo 1 > " brightness3);
    General_runCommand("echo 1 > " brightness4);
+   General_runCommand("echo 1 > " brightnessForWiredLED1);
 } // LedController_turnAllLightsOn()
 

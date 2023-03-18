@@ -3,7 +3,7 @@
 
 void LedController_init(void);
 void LedController_shutDown(void);
-void LedController_turnAllLightsOn(void);
-void LedController_turnAllLightsOff(void);
+void LedController_turnAllBBLightsOn(void);
+void LedController_turnAllBBLightsOff(void);
 
 #endif 
