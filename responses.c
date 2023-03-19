@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "responses.h"
  #include "audioControl.h"
@@ -30,7 +31,7 @@
 static char* generateResponse(char* request);
 static char* getCurrentTime(void);
 // static char* setAlarmMode(enum ALARM_MODE alarmMode);
-// static char* setAlarmTime(time_t alarmTime);
+static char* setAlarmTime(time_t alarmTime);
 // static char* getAlarmMode(void);
 // static char* getAlarmTime(void);
 // static char* playAlarmSound(enum ALARM_MODE mode);
@@ -52,7 +53,20 @@ static char* stopProgram(void);
 //     }
 //     return NULL;
 // }// convertAlarmModeToString()
-
+static time_t process_alarmTime(char *time_details)
+{
+	struct tm tm;
+    strtok(time_details, ",");
+    char *hours = strtok(NULL,",");
+    char *mins = strtok(NULL,",");
+    char *sec = strtok(NULL,",");
+    tm.tm_hour = atoi(hours);
+    tm.tm_min = atoi(mins);
+    tm.tm_sec = atoi(sec);
+    time_t tm_info = mktime(&tm);
+    printf("Alarm time set to: %d:%d:%d\n", tm.tm_hour,tm.tm_min,tm.tm_sec);
+    return tm_info;
+}
 static char* playAlarmSound(enum ALARM_MODE mode) {
     char* pResponse = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
 
@@ -68,8 +82,9 @@ static char* generateResponse(char* request) {
         pResponse = getCurrentTime();
     } else if(strcmp(request, "getAlarmTime\n") == 0) {             
         // pResponse = getAlarmTime();                         
-    } else if(strcmp(request, "setAlarmTime\n") == 0) {             
-        // pResponse = setAlarmTime();  
+    } else if(strncmp(request, "setAlarmTime",12) == 0) {
+        time_t alarm_time = process_alarmTime(request);
+        pResponse = setAlarmTime(alarm_time);
     } else if(strcmp(request, "getAlarmMode\n") == 0) {             
         // pResponse = getAlarmMode();
     } else if(strcmp(request, "setAlarmModeDefault1\n") == 0) {
@@ -124,22 +139,21 @@ static char* getCurrentTime(void) {
     return pResponse;
 }// getCurrentTime()
 
-// static char* getAlarmTime(void) {
-//     char* pResponse = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
+static char* getAlarmTime(void) {
+    char* pResponse = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
 
-//     int alarmHour = TimeController_getAlarmHour();
-//     int alarmMinute = TimeController_getAlarmMinute();
-//     snprintf(pResponse, MAX_PACKET_LENGTH_BYTES, "The alarm is set for %d:%d\n", alarmHour, alarmMinute);
+    int alarmHour = 1;//TimeController_getAlarmHour();
+    int alarmMinute = 2;//TimeController_getAlarmMinute();
+    snprintf(pResponse, MAX_PACKET_LENGTH_BYTES, "The alarm is set for %d:%d\n", alarmHour, alarmMinute);
 
-//     return pResponse;
-// }// getAlarmTime()
+    return pResponse;
+}// getAlarmTime()
 
-// static char* setAlarmTime(time_t alarmTime) {
-//     TimeController_setAlarmTime(alarmTime);
-//     char* pResponse = getAlarmTime();
-
-//     return pResponse;
-// }// setAlarmTime()
+static char* setAlarmTime(time_t alarmTime) {
+    TimeController_setAlarmTime(alarmTime);
+    char* pResponse = getAlarmTime();
+    return pResponse;
+}// setAlarmTime()
 
 // static char* setAlarmMode(enum ALARM_MODE alarmMode) {
 //     SoundHandler_setAlarmMode(alarmMode);

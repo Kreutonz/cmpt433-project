@@ -29,6 +29,10 @@ $(document).ready(function() {
 	$('#cs2').click(function(){
 		sendCommand("playCustom2\n");
 	});
+	$('#setAlarm').click(function(){
+		sendAlarm("setAlarmTime,"+$('#hourInput').val() +","+$('#minuteInput').val()+","+$('#secInput').val());
+		console.log("setAlarmTime,"+$('#hourInput').val() +","+$('#minuteInput').val()+","+$('#secInput').val());
+	});
 	
 	socket.on('commandReply', function(result) {
 		var commasep = result.split(',');
@@ -102,5 +106,9 @@ function updateStats(commasep) {
 }
 
 function sendCommand(message) {
+	socket.emit('prime', message);
+};
+
+function sendAlarm(message) {
 	socket.emit('prime', message);
 };
