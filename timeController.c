@@ -146,3 +146,8 @@ void TimeController_shutdown(void) {
     pthread_join(timeThreadID, NULL);
     pthread_join(alarmThreadID, NULL);
 }// TimeController_shutdown()
+
+ void TimeController_setAlarmTime(time_t alarm_Time)
+ {
+    alarm_Time = 0;
+ }
