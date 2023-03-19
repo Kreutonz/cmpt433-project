@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "alarmClock.h"
-#include "general.h"
 #include "joystick.h"
 #include "segDisplay.h"
 #include "timeController.h"
@@ -28,6 +27,11 @@ int main(void) {
     LedController_setAlarmStatus(ON);
     General_sleepForMs(5000);
     LedController_setAlarmStatus(OFF);
+    General_sleepForMs(2000);
+    LedController_setAlarmStatus(ON);
+    General_sleepForMs(5000);
+    LedController_setAlarmStatus(OFF);
+    LedController_setStatus(TERMINATE);
     shutdown();
 
     return 0;

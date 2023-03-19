@@ -27,7 +27,8 @@
 // GLOBAL VARIABLES
 // ********************
 
-static enum ALARM_STAUS alarmStatus;
+static enum ALARM_STAUS alarmStatus = OFF;
+static enum STATUS status = RUNNING;
 static pthread_t ledThreadID;
 static pthread_mutex_t ledControllerMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -115,15 +116,22 @@ static void turnAllBBLightsOn(void) {
 
 
 static void* turnAlarmLightsOnAndOff(void* args) {
-   turnAllBBLightsOn();
-   while (alarmStatus == ON) {
-      // Turn one led on one off
-      General_runCommand("echo 1 > " brightnessForWiredLED1);
-      General_runCommand("echo 1 > " GPIO_VALUE_115);
-      General_sleepForMs(250);
-      General_runCommand("echo 0 > " brightnessForWiredLED1);
-      General_runCommand("echo 0 > " GPIO_VALUE_115);
-      General_sleepForMs(250);
+   while (status == RUNNING) {
+      if (alarmStatus == ON) {
+         // Turn one led on one off
+         turnAllBBLightsOn();
+         General_runCommand("echo 1 > " brightnessForWiredLED1);
+         General_runCommand("echo 1 > " GPIO_VALUE_115);
+         General_sleepForMs(250);
+         General_runCommand("echo 0 > " brightnessForWiredLED1);
+         General_runCommand("echo 0 > " GPIO_VALUE_115);
+         General_sleepForMs(250);
+      } else if (alarmStatus == OFF) {
+         // Turn both leds off
+         General_runCommand("echo 0 > " brightnessForWiredLED1);
+         General_runCommand("echo 1 > " GPIO_VALUE_115);
+         turnAllBBLightsOff();
+      }
    }
    // Turn both leds off
    General_runCommand("echo 0 > " brightnessForWiredLED1);
@@ -145,6 +153,14 @@ enum ALARM_STAUS LedController_getAlarmStatus(void) {
    return stat;
 } // LedController_getAlarmStatus()
 
+enum STATUS LedController_getStatus(void) {
+   pthread_mutex_lock(&ledControllerMutex);
+   enum STATUS stat = status;
+   pthread_mutex_unlock(&ledControllerMutex);
+   
+   return stat;
+} // enum STATUS LedController_getStatus()
+
 
 void LedController_init(void) {
    initLeds();
@@ -157,6 +173,13 @@ void LedController_setAlarmStatus(enum ALARM_STAUS newStatus) {
    alarmStatus = newStatus;
    pthread_mutex_unlock(&ledControllerMutex);
 } // LedController_setAlarmStatus()
+
+
+void LedController_setStatus(enum STATUS value) {
+	pthread_mutex_lock(&ledControllerMutex);
+	status = value;
+	pthread_mutex_unlock(&ledControllerMutex);
+}//SegDisplay_setStatus()
 
 
 void LedController_shutDown(void) {
