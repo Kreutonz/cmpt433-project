@@ -8,6 +8,7 @@
 
 #include "timeController.h"
 #include "general.h"
+#include "ledController.h"
 
 #define MS_BETWEEN_ALARM_CHECKS 500
 #define MS_BETWEEN_SETTING_TIME 500
@@ -23,7 +24,7 @@ static time_t alarmTime;
 static int currentHours;
 static int currentMinutes;
 static int currentSeconds;
-
+struct tm newAlarmTime;
 
 //**************************
 //    PROTOTYPES (PRIVATE)
@@ -38,9 +39,15 @@ static void* setTimeInfo(void* args);
 
 static void* checkAlarm(void* args) {
     while(status == RUNNING) {
+        int alarmInSec = TimeController_getAlarmInSeconds();
+        printf("start alarmInSec %d\n", alarmInSec);
+        int currentTimeInSec = (currentHours * 3600) + (currentMinutes * 60) + currentSeconds;
         pthread_mutex_lock(&alarmMutex);
-        if(alarmTime > currentTime) {
-            // TODO: trigger alarm (LEDs, Sound, etc.)
+        if(currentTimeInSec >= alarmInSec && alarmInSec != 0) {
+            printf("start alarmInSec %d\n", alarmInSec);
+            LedController_setAlarmStatus(ON);
+            General_sleepForMs(1000);
+            TimeController_resetAlarm();
         }
         pthread_mutex_unlock(&alarmMutex);
 
@@ -151,3 +158,34 @@ void TimeController_shutdown(void) {
  {
     alarm_Time = 0;
  }
+
+ void TimeController_setNewAlarm(struct tm alarm) {
+    pthread_mutex_lock(&alarmMutex);
+    newAlarmTime = alarm;
+    pthread_mutex_unlock(&alarmMutex);
+ }
+
+struct tm TimeController_getNewAlarm() {
+    pthread_mutex_lock(&alarmMutex);
+    struct tm time = newAlarmTime;
+    pthread_mutex_unlock(&alarmMutex);
+
+    return time;
+}
+
+int TimeController_getAlarmInSeconds() {
+    struct tm time = TimeController_getNewAlarm();
+    int hoursInSec = time.tm_hour * 3600;
+    int minInSec = time.tm_min * 60;
+    int sec = time.tm_sec;
+    int total = hoursInSec + minInSec + sec;
+    return total;
+}
+
+void TimeController_resetAlarm() {
+    struct tm time;
+    time.tm_hour = 0;
+    time.tm_min = 0;
+    time.tm_sec = 0;
+    TimeController_setNewAlarm(time);
+} 

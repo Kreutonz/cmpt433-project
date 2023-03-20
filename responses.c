@@ -37,7 +37,7 @@ static char* setAlarmTime(time_t alarmTime);
 // static char* playAlarmSound(enum ALARM_MODE mode);
 static char* invalid(void);
 static char* stopProgram(void);
-
+static struct tm alarm;
 
 //**************************
 //   FUNCTIONS (PRIVATE)
@@ -65,6 +65,8 @@ static time_t process_alarmTime(char *time_details)
     tm.tm_sec = atoi(sec);
     time_t tm_info = mktime(&tm);
     printf("Alarm time set to: %d:%d:%d\n", tm.tm_hour,tm.tm_min,tm.tm_sec);
+    alarm = tm;
+    TimeController_setNewAlarm(alarm);
     return tm_info;
 }
 static char* playAlarmSound(enum ALARM_MODE mode) {
@@ -142,8 +144,8 @@ static char* getCurrentTime(void) {
 static char* getAlarmTime(void) {
     char* pResponse = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
 
-    int alarmHour = 1;//TimeController_getAlarmHour();
-    int alarmMinute = 2;//TimeController_getAlarmMinute();
+    int alarmHour = 1;
+    int alarmMinute = 2;
     snprintf(pResponse, MAX_PACKET_LENGTH_BYTES, "The alarm is set for %d:%d\n", alarmHour, alarmMinute);
 
     return pResponse;

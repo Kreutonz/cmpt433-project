@@ -8,7 +8,7 @@
 #include "audioControl.h"
 #include "udp.h"
 #include "potDriver.h"
-// #include "ledController.h"
+#include "ledController.h"
 
 //***************************
 //    PRIVATE PROTOTYPES
@@ -23,15 +23,6 @@ static void shutdown(void);
 
 int main(void) {
     init();
-    // General_sleepForMs(2000);
-    // LedController_setAlarmStatus(ON);
-    // General_sleepForMs(5000);
-    // LedController_setAlarmStatus(OFF);
-    // General_sleepForMs(2000);
-    // LedController_setAlarmStatus(ON);
-    // General_sleepForMs(5000);
-    // LedController_setAlarmStatus(OFF);
-    // LedController_setStatus(TERMINATE);
     shutdown();
 
     return 0;
@@ -49,7 +40,7 @@ static void init(void) {
     Joystick_init();
     potDriver_init();
     UDP_init();
-   // LedController_init();
+    LedController_init();
 
 }// init()
 
@@ -61,7 +52,7 @@ static void shutdown(void) {
     TimeController_shutdown();
     AudioController_shutdown();
     potDriver_shutdown();
-   // LedController_shutDown();
+    LedController_shutDown();
 }// shutdown()
 
 
@@ -74,4 +65,5 @@ void AlarmClock_terminateThreads(void) {
     Joystick_setStatus(TERMINATE);
     SegDisplay_setStatus(TERMINATE);
     TimeController_setStatus(TERMINATE);
+    LedController_setStatus(TERMINATE);
 }// AlarmClock_terminateThreads()
