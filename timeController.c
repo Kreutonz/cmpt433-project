@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "timeController.h"
 #include "general.h"
@@ -38,16 +39,19 @@ static void* setTimeInfo(void* args);
 //**************************
 
 static void* checkAlarm(void* args) {
+    bool isAlarmON = false;
     while(status == RUNNING) {
-        int alarmInSec = TimeController_getAlarmInSeconds();
-        printf("start alarmInSec %d\n", alarmInSec);
-        int currentTimeInSec = (currentHours * 3600) + (currentMinutes * 60) + currentSeconds;
         pthread_mutex_lock(&alarmMutex);
+        int alarmInSec = TimeController_getAlarmInSeconds();
+        int currentTimeInSec = (currentHours * 3600) + (currentMinutes * 60) + currentSeconds;
         if(currentTimeInSec >= alarmInSec && alarmInSec != 0) {
-            printf("start alarmInSec %d\n", alarmInSec);
-            LedController_setAlarmStatus(ON);
-            General_sleepForMs(1000);
-            TimeController_resetAlarm();
+            if (!isAlarmON) {
+                isAlarmON = true;
+                printf("TURN ONN LIGHTS: %d\n", alarmInSec);
+                LedController_setAlarmStatus(ON);
+            } 
+        } else {
+            isAlarmON = false;
         }
         pthread_mutex_unlock(&alarmMutex);
 
@@ -174,7 +178,7 @@ struct tm TimeController_getNewAlarm() {
 }
 
 int TimeController_getAlarmInSeconds() {
-    struct tm time = TimeController_getNewAlarm();
+    struct tm time = newAlarmTime;
     int hoursInSec = time.tm_hour * 3600;
     int minInSec = time.tm_min * 60;
     int sec = time.tm_sec;
@@ -189,3 +193,13 @@ void TimeController_resetAlarm() {
     time.tm_sec = 0;
     TimeController_setNewAlarm(time);
 } 
+
+void TimeController_snoozeAlarm() {
+    pthread_mutex_lock(&alarmMutex);
+    struct tm time;
+    time.tm_hour = currentHours * 3600;
+    time.tm_min = currentMinutes * 60;
+    time.tm_sec = currentSeconds + 10;
+    TimeController_setNewAlarm(time);
+    pthread_mutex_unlock(&alarmMutex);
+}

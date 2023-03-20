@@ -27,4 +27,5 @@ void TimeController_setNewAlarm(struct tm alarm);
 struct tm TimeController_getNewAlarm();
 int TimeController_getAlarmInSeconds();
 void TimeController_resetAlarm();
+void TimeController_snoozeAlarm();
 #endif

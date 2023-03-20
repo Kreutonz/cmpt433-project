@@ -6,6 +6,7 @@
 #include "joystick.h"
 #include "segDisplay.h"
 #include "timeController.h"
+#include "ledController.h"
 
 #define JOYSTICK_PIN_CONFIGURE_UP "config-pin p8.14 gpio"
 #define JOYSTICK_PIN_CONFIGURE_RIGHT "config-pin p8.15 gpio"
@@ -69,17 +70,27 @@ static void* readJoystick(void* args) {
         if(leftValue == 0) {
             SegDisplay_setDisplayMode(HOURS);
             printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            LedController_setAlarmStatus(OFF);
+            TimeController_resetAlarm();
         } else if(upValue == 0) {
             SegDisplay_setDisplayMode(MINUTES);
             printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            LedController_setAlarmStatus(OFF);
+            TimeController_resetAlarm();
         } else if(rightValue == 0) {
             SegDisplay_setDisplayMode(SECONDS);
             printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            LedController_setAlarmStatus(OFF);
+            TimeController_resetAlarm();
         } else if(downValue == 0) {
             SegDisplay_setDisplayMode(ALL);
             printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            LedController_setAlarmStatus(OFF);
+            TimeController_resetAlarm();
         } else if(pushValue == 0) {
             printf("[TODO]: if alarm activated (playing sound) --> SHUTOFF ALARM (setter)\n");
+            LedController_setAlarmStatus(OFF);
+            TimeController_resetAlarm();
         } else {
             SegDisplay_setDisplayMode(ALL);         // idle joystick
         }
