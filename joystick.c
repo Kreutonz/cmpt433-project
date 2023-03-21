@@ -69,26 +69,26 @@ static void* readJoystick(void* args) {
 
         if(leftValue == 0) {
             SegDisplay_setDisplayMode(HOURS);
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
-            TimeController_resetAlarm();
+            TimeController_snoozeAlarm();
         } else if(upValue == 0) {
             SegDisplay_setDisplayMode(MINUTES);
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
-            TimeController_resetAlarm();
+            TimeController_snoozeAlarm();
         } else if(rightValue == 0) {
             SegDisplay_setDisplayMode(SECONDS);
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
-            TimeController_resetAlarm();
+            TimeController_snoozeAlarm();
         } else if(downValue == 0) {
             SegDisplay_setDisplayMode(ALL);
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
-            TimeController_resetAlarm();
+            TimeController_snoozeAlarm();
         } else if(pushValue == 0) {
-            printf("[TODO]: if alarm activated (playing sound) --> SHUTOFF ALARM (setter)\n");
+            printf("SHUTOFF ALARM\n");
             LedController_setAlarmStatus(OFF);
             TimeController_resetAlarm();
         } else {
