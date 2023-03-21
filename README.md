@@ -28,5 +28,5 @@ In order to enable the two wired LEDs please do the following:
      - Step 3. Device Tree: Enabling the LED (guide link: https://opencoursehub.cs.sfu.ca/bfraser/grav-cms/cmpt433/guides/files/WiringAnLEDGuide.pdf)
 
 2). For wiring up the LED. 
-| 
+| ![image](https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230318_184828.jpg "Title" {width=40px height=400px})
   
