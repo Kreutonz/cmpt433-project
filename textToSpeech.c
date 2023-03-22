@@ -19,15 +19,23 @@ void speakTime() {
     struct tm *localTime = localtime(&currentTime);
 
     // Format the time as a string
-    char timeString[20];
-    strftime(timeString, sizeof(timeString), "The time is %I %M", localTime);
+    char hourString[20], minuteString[20], amPmString[20];
+    strftime(hourString, sizeof(hourString), "%I", localTime);
+    strftime(minuteString, sizeof(minuteString), "%M", localTime);
+    strftime(amPmString, sizeof(amPmString), "%p", localTime);
+
+    // Separate the AM/PM characters
+    char amPmSeparated[8];
+    snprintf(amPmSeparated, sizeof(amPmSeparated), "%c. %c", amPmString[0], amPmString[1]);
+
+    char timeString[60];
+    snprintf(timeString, sizeof(timeString), "The time is %s %s %s", hourString, minuteString, amPmSeparated);
 
     // Generate the WAV file using the espeak command
     char command[256];
     snprintf(command, sizeof(command), "espeak '%s' -w temp.wav", timeString);
     system(command);
 
-    // [SOURCE: https://stackoverflow.com/questions/23980283/sox-resample-and-convert]
     // Resample the WAV file using sox
     system("sox temp.wav -r 44100 temp_resampled.wav");
 
@@ -38,13 +46,12 @@ void speakTime() {
     // Play the sound using AudioMixer_queueSound
     AudioMixer_queueSound(&soundData);
 
-    // // Wait for the sound to finish playing
-    // int soundDurationMs = (soundData.numSamples * 1000) / 44100;
-    // usleep(soundDurationMs * 1000);
+    // Wait for the sound to finish playing
+    int soundDurationMs = (soundData.numSamples * 1000) / 44100;
+    usleep(soundDurationMs * 1000);
 
     // Free the memory and delete the WAV files
     AudioMixer_freeWaveFileData(&soundData);
     remove("temp.wav");
     remove("temp_resampled.wav");
 }
-
