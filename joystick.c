@@ -6,6 +6,8 @@
 #include "joystick.h"
 #include "segDisplay.h"
 #include "timeController.h"
+#include "textToSpeech.h"
+#include "audioControl.h"
 
 #define JOYSTICK_PIN_CONFIGURE_UP "config-pin p8.14 gpio"
 #define JOYSTICK_PIN_CONFIGURE_RIGHT "config-pin p8.15 gpio"
@@ -68,6 +70,7 @@ static void* readJoystick(void* args) {
 
         if(leftValue == 0) {
             SegDisplay_setDisplayMode(HOURS);
+            SoundHandler_playDefaultSound(1);
             printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
         } else if(upValue == 0) {
             SegDisplay_setDisplayMode(MINUTES);
@@ -77,6 +80,7 @@ static void* readJoystick(void* args) {
             printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
         } else if(downValue == 0) {
             SegDisplay_setDisplayMode(ALL);
+            speakTime();
             printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
         } else if(pushValue == 0) {
             printf("[TODO]: if alarm activated (playing sound) --> SHUTOFF ALARM (setter)\n");
