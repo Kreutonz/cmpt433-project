@@ -36,11 +36,11 @@ $(document).ready(function() {
 
 	// Added event listeners for the new buttons
 	$('#mp3-1').click(function(){
-		sendCommand("playRickRoll\n");
+		sendCommand("playPunjabi\n");
 	});
 	
 	$('#mp3-2').click(function(){
-		sendCommand("playPunjabi\n");
+		sendCommand("playRickRoll\n");
 	});
 	
 	socket.on('commandReply', function(result) {
