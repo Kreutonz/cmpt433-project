@@ -13,6 +13,7 @@
 #include "audioControl.h"
 #include "timeController.h"
 
+
 void speakTime() {
     // Get the current time
     time_t currentTime = TimeController_getCurrentTime();
@@ -23,6 +24,16 @@ void speakTime() {
     strftime(hourString, sizeof(hourString), "%I", localTime);
     strftime(minuteString, sizeof(minuteString), "%M", localTime);
     strftime(amPmString, sizeof(amPmString), "%p", localTime);
+
+    // Remove the leading zero from the hour string
+    if (hourString[0] == '0') {
+        memmove(hourString, hourString+1, strlen(hourString));
+    }
+
+    // Replace the leading zero with 'o' for the minute string
+    if (minuteString[0] == '0') {
+        minuteString[0] = 'o';
+    }
 
     // Separate the AM/PM characters
     char amPmSeparated[8];
@@ -36,7 +47,7 @@ void speakTime() {
     snprintf(command, sizeof(command), "espeak '%s' -w temp.wav", timeString);
     system(command);
 
-    // Resample the WAV file using sox
+    // Resample the WAV file from 22050 to 44100 using sox
     system("sox temp.wav -r 44100 temp_resampled.wav");
 
     // Read the resampled WAV file into memory
