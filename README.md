@@ -1,9 +1,14 @@
 ### Installation (Pre-Req)
-* Before running, please ensure that espeak and sox are installed on your BeagleBone.
+* Before running, please ensure that espeak, libmpg123 and sox are all installed on your BeagleBone:
 
-```sudo apt-get update```
-```sudo apt install espeak```
-```sudo apt-get install sox```
+```sudo apt install espeak ```
+```sudo apt-get install sox ```
+```sudo apt-get install libmpg123-dev ```
+
+
+* And the libmpg123 library installed on your host:
+
+```sudo apt-get install libmpg123-dev ```
 
 ### Timezone (Pre-Req)
 * Due to constraints of the linux O/S requiring sudo to set the timezone, run the command below to sync to PST (Default is UTC)

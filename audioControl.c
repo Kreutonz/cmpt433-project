@@ -158,6 +158,7 @@ void AudioMixer_readWaveFileIntoMemory(char *fileName, wavedata_t *pSound)
 	}
 }
 
+// [SOURCE:] https://stackoverflow.com/questions/19604216/mpg123-open-and-const
 void AudioMixer_readMP3FileIntoMemory(const char *fileName, wavedata_t *pSound)
 {
     assert(pSound);
