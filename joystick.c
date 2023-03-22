@@ -89,6 +89,7 @@ static void* readJoystick(void* args) {
             SoundHandler_playDefaultSound(STOP);
             TimeController_snoozeAlarm();
         } else if(downValue == 0) {
+            speakTime();
             SegDisplay_setDisplayMode(ALL);
             printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
