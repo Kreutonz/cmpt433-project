@@ -1,3 +1,10 @@
+### Installation (Pre-Req)
+* Before running, please ensure that espeak and sox are installed on your BeagleBone.
+
+```sudo apt-get update```
+```sudo apt install espeak```
+```sudo apt-get install sox```
+
 ### Timezone (Pre-Req)
 * Due to constraints of the linux O/S requiring sudo to set the timezone, run the command below to sync to PST (Default is UTC)
 
@@ -11,7 +18,7 @@
 |```Left``` |Hours               |
 |```Up```   |Minutes             |
 |```Right```|Seconds             |
-|```Down``` |HH:MM (Current Time)|
+|```Down``` |Text to Speech Current Time|
 
 
 ### Once Alarm Sounds:
