@@ -28,6 +28,8 @@ enum ALARM_MODE {
     DEFAULT3,
     CUSTOM1,
     CUSTOM2,
+    RICKROLL,
+    PUNJABI,
     STOP
 };
 

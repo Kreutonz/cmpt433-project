@@ -6,7 +6,9 @@
 #include <pthread.h>
 #include <limits.h>
 #include <alloca.h> // needed for mixer
+#include <mpg123.h>
 #include "audioControl.h"
+#include "mp3.h"
 
 static snd_pcm_t *handle;
 
@@ -40,6 +42,8 @@ wavedata_t def_alarmData2;
 wavedata_t def_alarmData3;
 wavedata_t cst_alarmData1;
 wavedata_t cst_alarmData2;
+wavedata_t rickrollData;
+wavedata_t punjabiData;
 
 static playbackSound_t soundBites[MAX_SOUND_BITES];
 
@@ -98,6 +102,8 @@ void AudioController_init(void)
 	AudioMixer_readWaveFileIntoMemory("sounds/alarm3.wav", &def_alarmData3);
 	AudioMixer_readWaveFileIntoMemory("sounds/custom1.wav", &cst_alarmData1);
 	AudioMixer_readWaveFileIntoMemory("sounds/custom2.wav", &cst_alarmData2);
+	AudioMixer_readMP3FileIntoMemory("sounds/rickroll.mp3", &rickrollData);
+	AudioMixer_readMP3FileIntoMemory("sounds/punjabi.mp3", &punjabiData);
 
 	// Launch playback thread:
 	pthread_create(&playbackThreadId, NULL, playbackThread, NULL);
@@ -152,6 +158,54 @@ void AudioMixer_readWaveFileIntoMemory(char *fileName, wavedata_t *pSound)
 		exit(EXIT_FAILURE);
 	}
 }
+
+void AudioMixer_readMP3FileIntoMemory(const char *fileName, wavedata_t *pSound)
+{
+    assert(pSound);
+
+    mpg123_handle *mh;
+    unsigned char *buffer;
+    size_t buffer_size;
+    size_t done;
+    int err;
+
+    int channels, encoding;
+    long rate;
+
+    mpg123_init();
+    mh = mpg123_new(NULL, &err);
+    buffer_size = mpg123_outblock(mh);
+    buffer = (unsigned char *)malloc(buffer_size * sizeof(unsigned char));
+
+    if (mpg123_open(mh, fileName) != MPG123_OK ||
+        mpg123_getformat(mh, &rate, &channels, &encoding) != MPG123_OK)
+    {
+        fprintf(stderr, "Trouble with mpg123: %s\n", mpg123_strerror(mh));
+        return;
+    }
+
+    if (encoding != MPG123_ENC_SIGNED_16)
+    {
+        fprintf(stderr, "Bad encoding: 0x%x!\n", encoding);
+        return;
+    }
+
+    pSound->pData = NULL;
+    pSound->numSamples = 0;
+
+    while (mpg123_read(mh, buffer, buffer_size, &done) == MPG123_OK)
+    {
+        pSound->pData = realloc(pSound->pData, (pSound->numSamples + done / 2) * sizeof(short));
+        memcpy(pSound->pData + pSound->numSamples, buffer, done);
+        pSound->numSamples += done / 2;
+    }
+
+    free(buffer);
+    mpg123_close(mh);
+    mpg123_delete(mh);
+    mpg123_exit();
+}
+
 
 void AudioMixer_freeWaveFileData(wavedata_t *pSound)
 {
@@ -381,6 +435,12 @@ void SoundHandler_playDefaultSound(enum ALARM_MODE alarm)
 			break;
 		case CUSTOM2:
 			AudioMixer_queueSound(&cst_alarmData2);
+			break;
+		case RICKROLL:
+			AudioMixer_queueSound(&rickrollData);
+			break;
+		case PUNJABI:
+			AudioMixer_queueSound(&punjabiData);
 			break;
 		case STOP:
 		default:

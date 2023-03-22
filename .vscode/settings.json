@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "pthread.h": "c",
-        "timecontroller.h": "c"
+        "timecontroller.h": "c",
+        "stdio.h": "c",
+        "audiocontrol.h": "c"
     }
 }

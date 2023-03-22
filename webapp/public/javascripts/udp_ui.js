@@ -33,6 +33,15 @@ $(document).ready(function() {
 		sendAlarm("setAlarmTime,"+$('#hourInput').val() +","+$('#minuteInput').val()+","+$('#secInput').val());
 		console.log("setAlarmTime,"+$('#hourInput').val() +","+$('#minuteInput').val()+","+$('#secInput').val());
 	});
+
+	// Added event listeners for the new buttons
+	$('#mp3-1').click(function(){
+		sendCommand("playRickRoll\n");
+	});
+	
+	$('#mp3-2').click(function(){
+		sendCommand("playPunjabi\n");
+	});
 	
 	socket.on('commandReply', function(result) {
 		var commasep = result.split(',');
@@ -43,7 +52,6 @@ $(document).ready(function() {
 	});
 	
 });
-
 
 
 function showError(reason) {

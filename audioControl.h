@@ -39,4 +39,6 @@ void startPlaybackThread(pthread_t *mixerThread);
 
 void* playbackThread(void* arg);
 
+void AudioMixer_readMP3FileIntoMemory(const char *fileName, wavedata_t *pSound);
+
 #endif

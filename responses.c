@@ -83,20 +83,10 @@ static char* playAlarmSound(enum ALARM_MODE mode) {
 static char* generateResponse(char* request) {
     char* pResponse;
     if(strcmp(request, "getCurrentTime\n") == 0) {
-        pResponse = getCurrentTime();
-    } else if(strcmp(request, "getAlarmTime\n") == 0) {             
-        // pResponse = getAlarmTime();                         
+        pResponse = getCurrentTime();                     
     } else if(strncmp(request, "setAlarmTime",12) == 0) {
         time_t alarm_time = process_alarmTime(request);
         pResponse = setAlarmTime(alarm_time);
-    } else if(strcmp(request, "getAlarmMode\n") == 0) {             
-        // pResponse = getAlarmMode();
-    } else if(strcmp(request, "setAlarmModeDefault1\n") == 0) {
-        // pResponse = setAlarmMode(DEFAULT1); 
-    } else if(strcmp(request, "setAlarmModeDefault2\n") == 0) {
-        // pResponse = setAlarmMode(DEFAULT2); 
-    } else if(strcmp(request, "setAlarmModeCustom\n") == 0) {
-        // pResponse = setAlarmMode(CUSTOM);
     } else if(strcmp(request, "playDefault1\n") == 0) {             
          pResponse = playAlarmSound(DEFAULT1); 
          alarmMode = DEFAULT1;
@@ -112,7 +102,16 @@ static char* generateResponse(char* request) {
     } else if(strcmp(request, "playCustom2\n") == 0) {             
          pResponse = playAlarmSound(CUSTOM2); 
          alarmMode = CUSTOM2; 
-    } else if(strcmp(request, "playStop\n") == 0) {             
+    } 
+    else if(strcmp(request, "playRickRoll\n") == 0) {             
+         pResponse = playAlarmSound(RICKROLL);
+         alarmMode = RICKROLL;
+    }
+    else if(strcmp(request, "playPunjabi\n") == 0) {
+        pResponse = playAlarmSound(PUNJABI);
+        alarmMode = PUNJABI;
+    }   
+    else if(strcmp(request, "playStop\n") == 0) {             
          pResponse = playAlarmSound(STOP);  
     } else if(strcmp(request, "terminate\n") == 0) {
         alarmMode = STOP; 
