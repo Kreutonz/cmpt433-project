@@ -8,7 +8,6 @@
 #include <alloca.h> // needed for mixer
 #include <mpg123.h>
 #include "audioControl.h"
-#include "mp3.h"
 
 static snd_pcm_t *handle;
 
