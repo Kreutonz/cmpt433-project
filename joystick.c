@@ -6,6 +6,8 @@
 #include "joystick.h"
 #include "segDisplay.h"
 #include "timeController.h"
+#include "ledController.h"
+#include "audioControl.h"
 #include "textToSpeech.h"
 #include "audioControl.h"
 
@@ -70,20 +72,33 @@ static void* readJoystick(void* args) {
 
         if(leftValue == 0) {
             SegDisplay_setDisplayMode(HOURS);
-            SoundHandler_playDefaultSound(1);
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
+            LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
+            TimeController_snoozeAlarm();
         } else if(upValue == 0) {
             SegDisplay_setDisplayMode(MINUTES);
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
+            LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
+            TimeController_snoozeAlarm();
         } else if(rightValue == 0) {
             SegDisplay_setDisplayMode(SECONDS);
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
+            LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
+            TimeController_snoozeAlarm();
         } else if(downValue == 0) {
             SegDisplay_setDisplayMode(ALL);
-            speakTime();
-            printf("[TODO]: if alarm activated (playing sound) --> SNOOZE (setter)\n");
+            printf("SNOOZE\n");
+            LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
+            TimeController_snoozeAlarm();
         } else if(pushValue == 0) {
-            printf("[TODO]: if alarm activated (playing sound) --> SHUTOFF ALARM (setter)\n");
+            printf("SHUTOFF ALARM\n");
+            LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
+            TimeController_resetAlarm();
         } else {
             SegDisplay_setDisplayMode(ALL);         // idle joystick
         }

@@ -2,13 +2,13 @@
 #include <stdlib.h>
 
 #include "alarmClock.h"
-#include "general.h"
 #include "joystick.h"
 #include "segDisplay.h"
 #include "timeController.h"
 #include "audioControl.h"
 #include "udp.h"
 #include "potDriver.h"
+#include "ledController.h"
 
 //***************************
 //    PRIVATE PROTOTYPES
@@ -40,6 +40,7 @@ static void init(void) {
     Joystick_init();
     potDriver_init();
     UDP_init();
+    LedController_init();
 
 }// init()
 
@@ -51,6 +52,7 @@ static void shutdown(void) {
     TimeController_shutdown();
     AudioController_shutdown();
     potDriver_shutdown();
+    LedController_shutDown();
 }// shutdown()
 
 
@@ -63,4 +65,5 @@ void AlarmClock_terminateThreads(void) {
     Joystick_setStatus(TERMINATE);
     SegDisplay_setStatus(TERMINATE);
     TimeController_setStatus(TERMINATE);
+    LedController_setStatus(TERMINATE);
 }// AlarmClock_terminateThreads()
