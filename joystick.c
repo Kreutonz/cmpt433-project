@@ -7,6 +7,7 @@
 #include "segDisplay.h"
 #include "timeController.h"
 #include "ledController.h"
+#include "audioControl.h"
 
 #define JOYSTICK_PIN_CONFIGURE_UP "config-pin p8.14 gpio"
 #define JOYSTICK_PIN_CONFIGURE_RIGHT "config-pin p8.15 gpio"
@@ -71,25 +72,30 @@ static void* readJoystick(void* args) {
             SegDisplay_setDisplayMode(HOURS);
             printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
             TimeController_snoozeAlarm();
         } else if(upValue == 0) {
             SegDisplay_setDisplayMode(MINUTES);
             printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
             TimeController_snoozeAlarm();
         } else if(rightValue == 0) {
             SegDisplay_setDisplayMode(SECONDS);
             printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
             TimeController_snoozeAlarm();
         } else if(downValue == 0) {
             SegDisplay_setDisplayMode(ALL);
             printf("SNOOZE\n");
             LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
             TimeController_snoozeAlarm();
         } else if(pushValue == 0) {
             printf("SHUTOFF ALARM\n");
             LedController_setAlarmStatus(OFF);
+            SoundHandler_playDefaultSound(STOP);
             TimeController_resetAlarm();
         } else {
             SegDisplay_setDisplayMode(ALL);         // idle joystick

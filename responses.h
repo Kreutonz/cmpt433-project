@@ -32,5 +32,7 @@ enum ALARM_MODE {
 };
 
 char* Responses_handler(char* request, int* length);
+enum ALARM_MODE Responses_getAlarmMode(void);
+void Responses_setAlarmMode(enum ALARM_MODE newMode);
 
 #endif 

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <pthread.h>
 
 #include "responses.h"
  #include "audioControl.h"
@@ -21,7 +22,8 @@
 //     GLOBAL VARIABLES
 // ****************************
 
-
+static int alarmMode = STOP;
+static pthread_mutex_t responsesMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //**************************
 //   PROTOTYPES (PRIVATE)
@@ -97,17 +99,23 @@ static char* generateResponse(char* request) {
         // pResponse = setAlarmMode(CUSTOM);
     } else if(strcmp(request, "playDefault1\n") == 0) {             
          pResponse = playAlarmSound(DEFAULT1); 
+         alarmMode = DEFAULT1;
     } else if(strcmp(request, "playDefault2\n") == 0) {             
          pResponse = playAlarmSound(DEFAULT2); 
+         alarmMode = DEFAULT2;
     } else if(strcmp(request, "playDefault3\n") == 0) {             
          pResponse = playAlarmSound(DEFAULT3); 
+         alarmMode = DEFAULT3;
     } else if(strcmp(request, "playCustom1\n") == 0) {             
-         pResponse = playAlarmSound(CUSTOM1);  
+         pResponse = playAlarmSound(CUSTOM1); 
+         alarmMode = CUSTOM1; 
     } else if(strcmp(request, "playCustom2\n") == 0) {             
-         pResponse = playAlarmSound(CUSTOM2);  
+         pResponse = playAlarmSound(CUSTOM2); 
+         alarmMode = CUSTOM2; 
     } else if(strcmp(request, "playStop\n") == 0) {             
          pResponse = playAlarmSound(STOP);  
     } else if(strcmp(request, "terminate\n") == 0) {
+        alarmMode = STOP; 
         pResponse = stopProgram();                   
     } else if(strcmp(request, "check") == 0) {
         char* resp = malloc(MAX_PACKET_LENGTH_BYTES + sizeof('\n'));
@@ -193,3 +201,19 @@ char* Responses_handler(char* request, int* length) {
 
     return pResponse;
 }// Responses_Handler()
+
+
+enum ALARM_MODE Responses_getAlarmMode(void) {
+    pthread_mutex_lock(&responsesMutex);
+    enum ALARM_MODE mode = alarmMode;
+    pthread_mutex_unlock(&responsesMutex);
+   
+   return mode;
+} // enum ALARM_MODE Responses_getAlarmMode
+
+
+void Responses_setAlarmMode(enum ALARM_MODE newMode) {
+   pthread_mutex_lock(&responsesMutex);
+   alarmMode = newMode;
+   pthread_mutex_unlock(&responsesMutex);
+} // void Responses_setAlarmMode()

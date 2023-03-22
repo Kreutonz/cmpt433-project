@@ -23,10 +23,11 @@
 
 ### LEDS:
 In order to enable the two wired LEDs please do the following:
-1). Follow Brian Fraser's guide on setting up a device tree to enable our first (left) LED. Do this for only this one LED as the other LED, we will be driving the gpio pins instead which has already been done. Please go through for configuring the left LED:
-     - Step 3. Device Tree: Enabling the LED (guide link: https://opencoursehub.cs.sfu.ca/bfraser/grav-cms/cmpt433/guides/files/WiringAnLEDGuide.pdf)
+* Follow Brian Fraser's guide on setting up a device tree to enable our first (left) LED. Do this for only this one LED as the other LED, we will be driving the gpio pins instead which has already been done. Please go through this part of the guide for configuring the left LED:
+     * Step 3. Device Tree: Enabling the LED (guide link: https://opencoursehub.cs.sfu.ca/bfraser/grav-cms/cmpt433/guides/files/WiringAnLEDGuide.pdf)
 
-2). For wiring up the LED: <br>
+* The two GPIO pins that have the wired connected on them are PIN23 and PIN27 both on the P9 headers. The power is outputting from PIN3 also on the P9 header. 
+* For wiring up the LED: <br>
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230318_184828.jpg" width="500" height="500">
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230318_184838.jpg" width="500" height="500">
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230321_113237.jpg" width="500" height="500">

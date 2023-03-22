@@ -10,6 +10,8 @@
 #include "timeController.h"
 #include "general.h"
 #include "ledController.h"
+#include "audioControl.h"
+#include "responses.h"
 
 #define MS_BETWEEN_ALARM_CHECKS 500
 #define MS_BETWEEN_SETTING_TIME 500
@@ -51,6 +53,7 @@ static void* checkAlarm(void* args) {
             if (!isAlarmON) {
                 isAlarmON = true;
                 printf("TURN ONN LIGHTS: %d\n", alarmInSec);
+                SoundHandler_playDefaultSound(Responses_getAlarmMode());
                 LedController_setAlarmStatus(ON);
             } 
         } else {
