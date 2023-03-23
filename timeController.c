@@ -51,7 +51,7 @@ static void* checkAlarm(void* args) {
         if(currentTimeInSec >= alarmInSec && alarmInSec != 0) {
             if (!isAlarmOn) {
                 isAlarmOn = true;
-                printf("TURN ONN LIGHTS: %d\n", alarmInSec);
+                printf("TURN ON LIGHTS: %d\n", alarmInSec);
                 SoundHandler_playDefaultSound(Responses_getAlarmMode());
                 LedController_setAlarmStatus(ON);
             } 

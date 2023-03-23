@@ -1,6 +1,4 @@
-// Incomplete implementation of an audio mixer. Search for "REVISIT" to find things
-// which are left as incomplete.
-// Note: Generates low latency audio on BeagleBone Black; higher latency found on host.
+#define _DEFAULT_SOURCE
 #include <alsa/asoundlib.h>
 #include <stdbool.h>
 #include <pthread.h>
@@ -43,12 +41,15 @@ wavedata_t cst_alarmData1;
 wavedata_t cst_alarmData2;
 wavedata_t rickrollData;
 wavedata_t punjabiData;
+wavedata_t soundData;
 
 static playbackSound_t soundBites[MAX_SOUND_BITES];
 
 // Playback threading
 void* playbackThread(void* arg);
 static bool stopping = false;
+static bool isPlaying = false;
+static bool isLooping = false;
 static pthread_t playbackThreadId;
 static pthread_mutex_t audioMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -158,7 +159,7 @@ void AudioMixer_readWaveFileIntoMemory(char *fileName, wavedata_t *pSound)
 	}
 }
 
-// [SOURCE:] https://stackoverflow.com/questions/19604216/mpg123-open-and-const
+// [SOURCE]: https://stackoverflow.com/questions/19604216/mpg123-open-and-const
 void AudioMixer_readMP3FileIntoMemory(const char *fileName, wavedata_t *pSound)
 {
     assert(pSound);
@@ -384,69 +385,108 @@ static void fillPlaybackBuffer(short *buff, int size)
 }
 
 
+
 void* playbackThread(void* arg)
 {
+    while (!stopping)
+    {
+        if (isPlaying)
+        {
+            // Generate next block of audio
+            fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
 
-	while (!stopping ) {
+            // Output the audio
+            snd_pcm_sframes_t frames = snd_pcm_writei(handle,
+                                                      playbackBuffer, playbackBufferSize);
+            // Check for (and handle) possible error conditions on output
+            if (frames < 0)
+            {
+                fprintf(stderr, "AudioMixer: writei() returned %li\n", frames);
+                frames = snd_pcm_recover(handle, frames, 1);
+            }
+            if (frames < 0)
+            {
+                fprintf(stderr, "ERROR: Failed writing audio with snd_pcm_writei(): %li\n",
+                        frames);
+                exit(EXIT_FAILURE);
+            }
+            if (frames > 0 && frames < playbackBufferSize)
+            {
+                printf("Short write (expected %li, wrote %li)\n",
+                       playbackBufferSize, frames);
+            }
 
-		// Generate next block of audio
-			fillPlaybackBuffer(playbackBuffer, playbackBufferSize);
+            // Check if the current sound has finished playing
+            if (soundBites[0].pSound == NULL)
+            {
+                if (isLooping)
+                {
+                    // Loop the sound
+                    SoundHandler_playDefaultSound(Responses_getAlarmMode());
+                }
+                else
+                {
+                    isPlaying = 0; // Reset the isPlaying flag
+                }
+            }
+        }
+        else
+        {
+            // Sleep for a while before checking again
+            usleep(100000); // Adjust the sleep duration as needed
+        }
+    }
 
-			// Output the audio
-			snd_pcm_sframes_t frames = snd_pcm_writei(handle,
-					playbackBuffer, playbackBufferSize);
-			// Check for (and handle) possible error conditions on output
-			if (frames < 0) {
-				fprintf(stderr, "AudioMixer: writei() returned %li\n", frames);
-				frames = snd_pcm_recover(handle, frames, 1);
-			}
-			if (frames < 0) {
-				fprintf(stderr, "ERROR: Failed writing audio with snd_pcm_writei(): %li\n",
-						frames);
-				exit(EXIT_FAILURE);
-			}
-			if (frames > 0 && frames < playbackBufferSize) {
-				printf("Short write (expected %li, wrote %li)\n",
-						playbackBufferSize, frames);
-			}
-			
-	}
-
-	return NULL;
+    return NULL;
 }
 
 
 void SoundHandler_playDefaultSound(enum ALARM_MODE alarm)
 {
-	printf("Playing alarm %d\r\n", alarm);
-	switch(alarm)
-	{
-		case DEFAULT1:
-			AudioMixer_queueSound(&def_alarmData1);
-			break;
-		case DEFAULT2:
-			AudioMixer_queueSound(&def_alarmData2);
-			break;
-		case DEFAULT3:
-			AudioMixer_queueSound(&def_alarmData3);
-			break;
-		case CUSTOM1:
-			AudioMixer_queueSound(&cst_alarmData1);
-			break;
-		case CUSTOM2:
-			AudioMixer_queueSound(&cst_alarmData2);
-			break;
-		case RICKROLL:
-			AudioMixer_queueSound(&rickrollData);
-			break;
-		case PUNJABI:
-			AudioMixer_queueSound(&punjabiData);
-			break;
-		case STOP:
-		default:
-			soundBites[0].pSound = NULL;
-    		soundBites[0].location = 0;
-			break;
-	}
-		
+    printf("Playing alarm %d\r\n", alarm);
+
+    // Set isPlaying and isLooping flags
+    isPlaying = 1;
+    isLooping = 1;
+
+    switch (alarm)
+    {
+        case DEFAULT1:
+            AudioMixer_queueSound(&def_alarmData1);
+            break;
+        case DEFAULT2:
+            AudioMixer_queueSound(&def_alarmData2);
+            break;
+        case DEFAULT3:
+            AudioMixer_queueSound(&def_alarmData3);
+            break;
+        case CUSTOM1:
+            AudioMixer_queueSound(&cst_alarmData1);
+            break;
+        case CUSTOM2:
+            AudioMixer_queueSound(&cst_alarmData2);
+            break;
+        case RICKROLL:
+            AudioMixer_queueSound(&rickrollData);
+            break;
+        case PUNJABI:
+            AudioMixer_queueSound(&punjabiData);
+            break;
+		case TEMP:
+    	AudioMixer_readWaveFileIntoMemory("temp_resampled.wav", &soundData);
+    	AudioMixer_queueSound(&soundData);
+		int soundDurationMs = (soundData.numSamples * 1000) / 44100;
+    	usleep(soundDurationMs * 1000);
+		isPlaying = 0;
+    	isLooping = 0;
+   		AudioMixer_freeWaveFileData(&soundData);
+        case STOP:
+        default:
+            soundBites[0].pSound = NULL;
+            soundBites[0].location = 0;
+            isPlaying = 0;
+            isLooping = 0;
+            break;
+    }
 }
+
