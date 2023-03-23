@@ -11,6 +11,7 @@
 #include "audioControl.h"
 #include "textToSpeech.h"
 #include "audioControl.h"
+#include "responses.h"
 
 #define JOYSTICK_PIN_CONFIGURE_UP "config-pin p8.14 gpio"
 #define JOYSTICK_PIN_CONFIGURE_RIGHT "config-pin p8.15 gpio"
@@ -97,7 +98,6 @@ static void* readJoystick(void* args) {
             }
         } else if(downValue == 0) {
             speakTime();
-            SegDisplay_setDisplayMode(ALL);
             if (alarmStatus) {
                 printf("SNOOZE\n");
                 LedController_setAlarmStatus(OFF);

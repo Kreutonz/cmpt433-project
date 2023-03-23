@@ -22,7 +22,7 @@
 //     GLOBAL VARIABLES
 // ****************************
 
-static int alarmMode = STOP;
+static int alarmMode = DEFAULT1;
 static pthread_mutex_t responsesMutex = PTHREAD_MUTEX_INITIALIZER;
 
 //**************************

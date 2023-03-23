@@ -50,19 +50,7 @@ void speakTime() {
     // Resample the WAV file from 22050 to 44100 using sox
     system("sox temp.wav -r 44100 temp_resampled.wav");
 
-    // Read the resampled WAV file into memory
-    wavedata_t soundData;
-    AudioMixer_readWaveFileIntoMemory("temp_resampled.wav", &soundData);
-
-    // Play the sound using AudioMixer_queueSound
-    AudioMixer_queueSound(&soundData);
-
-    // Wait for the sound to finish playing
-    int soundDurationMs = (soundData.numSamples * 1000) / 44100;
-    usleep(soundDurationMs * 1000);
-
-    // Free the memory and delete the WAV files
-    AudioMixer_freeWaveFileData(&soundData);
+    SoundHandler_playDefaultSound(TEMP);
     remove("temp.wav");
     remove("temp_resampled.wav");
 }

@@ -1,6 +1,6 @@
-/* 
-[DESCRIPTION]: 
-    - Plays a sound that says the current time when triggered.
+/*
+[DESCRIPTION]:
+- Plays a sound that says the current time when triggered using espeak.
 */
 
 #ifndef TEXT_TO_SPEECH_H_
