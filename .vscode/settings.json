@@ -3,6 +3,8 @@
         "pthread.h": "c",
         "timecontroller.h": "c",
         "stdio.h": "c",
-        "audiocontrol.h": "c"
+        "audiocontrol.h": "c",
+        "string.h": "c",
+        "time.h": "c"
     }
 }

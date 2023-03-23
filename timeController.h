@@ -8,6 +8,7 @@
 
 #include <time.h>
 #include "general.h"
+#include <stdbool.h>
 
 enum STATUS TimeController_getStatus(void);
 time_t TimeController_getCurrentTime(void);
@@ -18,14 +19,12 @@ void TimeController_init(void);
 void TimeController_setStatus(enum STATUS status);
 void TimeController_shutdown(void);
 
-// TODO:
- void TimeController_setAlarmTime(time_t alarmTime);
-// int TimeController_getAlarmHours(void);
-// int TimeController_getAlarmMinutes(void);
-// time_t TimeController_getAlarmTime(void);
+
+void TimeController_setAlarmTime(time_t alarmTime);
 void TimeController_setNewAlarm(struct tm alarm);
 struct tm TimeController_getNewAlarm();
 int TimeController_getAlarmInSeconds();
+bool TimeController_getAlarmStatus();
 void TimeController_resetAlarm();
 void TimeController_snoozeAlarm();
 #endif

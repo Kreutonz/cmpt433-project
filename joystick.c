@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <stdbool.h>
 
 #include "general.h"
 #include "joystick.h"
@@ -69,37 +70,47 @@ static void* readJoystick(void* args) {
         int downValue = General_readIntegerFromFile(JOYSTICK_DOWN_VALUE);
         int leftValue = General_readIntegerFromFile(JOYSTICK_LEFT_VALUE);
         int pushValue = General_readIntegerFromFile(JOYSTICK_PUSH_VALUE);
-
+        bool alarmStatus = TimeController_getAlarmStatus();
         if(leftValue == 0) {
             SegDisplay_setDisplayMode(HOURS);
-            printf("SNOOZE\n");
-            LedController_setAlarmStatus(OFF);
-            SoundHandler_playDefaultSound(STOP);
-            TimeController_snoozeAlarm();
+            if (alarmStatus) {
+                printf("SNOOZE\n");
+                LedController_setAlarmStatus(OFF);
+                SoundHandler_playDefaultSound(STOP);
+                TimeController_snoozeAlarm();
+            }
         } else if(upValue == 0) {
             SegDisplay_setDisplayMode(MINUTES);
-            printf("SNOOZE\n");
-            LedController_setAlarmStatus(OFF);
-            SoundHandler_playDefaultSound(STOP);
-            TimeController_snoozeAlarm();
+            if (alarmStatus) {
+                printf("SNOOZE\n");
+                LedController_setAlarmStatus(OFF);
+                SoundHandler_playDefaultSound(STOP);
+                TimeController_snoozeAlarm();
+            }
         } else if(rightValue == 0) {
             SegDisplay_setDisplayMode(SECONDS);
-            printf("SNOOZE\n");
-            LedController_setAlarmStatus(OFF);
-            SoundHandler_playDefaultSound(STOP);
-            TimeController_snoozeAlarm();
+            if (alarmStatus) {
+                printf("SNOOZE\n");
+                LedController_setAlarmStatus(OFF);
+                SoundHandler_playDefaultSound(STOP);
+                TimeController_snoozeAlarm();
+            }
         } else if(downValue == 0) {
             speakTime();
             SegDisplay_setDisplayMode(ALL);
-            printf("SNOOZE\n");
-            LedController_setAlarmStatus(OFF);
-            SoundHandler_playDefaultSound(STOP);
-            TimeController_snoozeAlarm();
+            if (alarmStatus) {
+                printf("SNOOZE\n");
+                LedController_setAlarmStatus(OFF);
+                SoundHandler_playDefaultSound(STOP);
+                TimeController_snoozeAlarm();
+            }
         } else if(pushValue == 0) {
-            printf("SHUTOFF ALARM\n");
-            LedController_setAlarmStatus(OFF);
-            SoundHandler_playDefaultSound(STOP);
-            TimeController_resetAlarm();
+            if (alarmStatus) {
+                printf("SHUTOFF ALARM\n");
+                LedController_setAlarmStatus(OFF);
+                SoundHandler_playDefaultSound(STOP);
+                TimeController_resetAlarm();
+            }
         } else {
             SegDisplay_setDisplayMode(ALL);         // idle joystick
         }

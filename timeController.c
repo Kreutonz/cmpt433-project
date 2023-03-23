@@ -5,7 +5,6 @@
 #include <pthread.h>
 #include <time.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "timeController.h"
 #include "general.h"
@@ -38,26 +37,26 @@ struct tm newAlarmTime;
 
 static void* checkAlarm(void* args);
 static void* setTimeInfo(void* args);
+static bool isAlarmOn = false;
 
 //**************************
 //    FUNCTIONS (PRIVATE)
 //**************************
 
 static void* checkAlarm(void* args) {
-    bool isAlarmON = false;
     while(status == RUNNING) {
         pthread_mutex_lock(&alarmMutex);
         int alarmInSec = TimeController_getAlarmInSeconds();
         int currentTimeInSec = (currentHours * SECS_TO_HOURS) + (currentMinutes * SECS_TO_MINS) + currentSeconds;
         if(currentTimeInSec >= alarmInSec && alarmInSec != 0) {
-            if (!isAlarmON) {
-                isAlarmON = true;
+            if (!isAlarmOn) {
+                isAlarmOn = true;
                 printf("TURN ONN LIGHTS: %d\n", alarmInSec);
                 SoundHandler_playDefaultSound(Responses_getAlarmMode());
                 LedController_setAlarmStatus(ON);
             } 
         } else {
-            isAlarmON = false;
+            isAlarmOn = false;
         }
         pthread_mutex_unlock(&alarmMutex);
 
@@ -109,6 +108,7 @@ time_t TimeController_getCurrentTime(void) {
     return time;
 }// TimeController_getCurrentTime()
 
+
 time_t TimeController_getAlarmTime(void) {
     pthread_mutex_lock(&alarmMutex);
     time_t time = alarmTime;
@@ -116,6 +116,7 @@ time_t TimeController_getAlarmTime(void) {
     
     return time;
 }// TimeController_getAlarmTime()
+
 
 int TimeController_getCurrentHours(void) {
     pthread_mutex_lock(&timeMutex);
@@ -169,11 +170,13 @@ void TimeController_shutdown(void) {
     alarm_Time = 0;
  }
 
+
  void TimeController_setNewAlarm(struct tm alarm) {
     pthread_mutex_lock(&alarmMutex);
     newAlarmTime = alarm;
     pthread_mutex_unlock(&alarmMutex);
- }
+ } // void TimeController_setNewAlarm(struct tm alarm) 
+
 
 struct tm TimeController_getNewAlarm() {
     pthread_mutex_lock(&alarmMutex);
@@ -181,7 +184,8 @@ struct tm TimeController_getNewAlarm() {
     pthread_mutex_unlock(&alarmMutex);
 
     return time;
-}
+} // struct tm TimeController_getNewAlarm()
+
 
 int TimeController_getAlarmInSeconds() {
     struct tm time = newAlarmTime;
@@ -190,7 +194,17 @@ int TimeController_getAlarmInSeconds() {
     int sec = time.tm_sec;
     int total = hoursInSec + minInSec + sec;
     return total;
-}
+} // int TimeController_getAlarmInSeconds()
+
+
+bool TimeController_getAlarmStatus() {
+    pthread_mutex_lock(&alarmMutex);
+    bool alarmStatus = isAlarmOn;
+    pthread_mutex_unlock(&alarmMutex);
+
+    return alarmStatus;
+} // TimeController_getAlarmStatus()
+
 
 void TimeController_resetAlarm() {
     struct tm time;
@@ -198,7 +212,8 @@ void TimeController_resetAlarm() {
     time.tm_min = 0;
     time.tm_sec = 0;
     TimeController_setNewAlarm(time);
-} 
+} // void TimeController_resetAlarm()
+
 
 void TimeController_snoozeAlarm() {
     pthread_mutex_lock(&alarmMutex);
@@ -208,4 +223,4 @@ void TimeController_snoozeAlarm() {
     time.tm_sec = currentSeconds + SNOOZE_IN_SEC;
     newAlarmTime = time;
     pthread_mutex_unlock(&alarmMutex);
-}
+} // void TimeController_snoozeAlarm()
