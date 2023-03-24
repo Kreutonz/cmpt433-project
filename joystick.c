@@ -76,6 +76,7 @@ static void* readJoystick(void* args) {
             SegDisplay_setDisplayMode(HOURS);
             if (alarmStatus) {
                 printf("SNOOZE\n");
+                TimeController_setAlarmStatus(false);
                 LedController_setAlarmStatus(OFF);
                 SoundHandler_playDefaultSound(STOP);
                 TimeController_snoozeAlarm();
@@ -84,6 +85,7 @@ static void* readJoystick(void* args) {
             SegDisplay_setDisplayMode(MINUTES);
             if (alarmStatus) {
                 printf("SNOOZE\n");
+                TimeController_setAlarmStatus(false);
                 LedController_setAlarmStatus(OFF);
                 SoundHandler_playDefaultSound(STOP);
                 TimeController_snoozeAlarm();
@@ -92,6 +94,7 @@ static void* readJoystick(void* args) {
             SegDisplay_setDisplayMode(SECONDS);
             if (alarmStatus) {
                 printf("SNOOZE\n");
+                TimeController_setAlarmStatus(false);
                 LedController_setAlarmStatus(OFF);
                 SoundHandler_playDefaultSound(STOP);
                 TimeController_snoozeAlarm();
@@ -100,6 +103,7 @@ static void* readJoystick(void* args) {
             speakTime();
             if (alarmStatus) {
                 printf("SNOOZE\n");
+                TimeController_setAlarmStatus(false);
                 LedController_setAlarmStatus(OFF);
                 SoundHandler_playDefaultSound(STOP);
                 TimeController_snoozeAlarm();
@@ -107,6 +111,7 @@ static void* readJoystick(void* args) {
         } else if(pushValue == 0) {
             if (alarmStatus) {
                 printf("SHUTOFF ALARM\n");
+                TimeController_setAlarmStatus(false);
                 LedController_setAlarmStatus(OFF);
                 SoundHandler_playDefaultSound(STOP);
                 TimeController_resetAlarm();
