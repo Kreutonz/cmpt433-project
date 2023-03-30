@@ -42,7 +42,9 @@ In order to enable the two wired LEDs please do the following:
 * For wiring up the LED: <br>
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230318_184828.jpg" width="500" height="500">
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230318_184838.jpg" width="500" height="500">
-<img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230321_113237.jpg" width="500" height="500"><br>
+<img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/20230321_113237.jpg" width="500" height="500">
+<img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/led1.png" width="500" height="500">
+<img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/ledwiring/led2.png" width="500" height="500"><br>
   
 ### MOTION SENSOR:
 In order to enable the motion sensor you will need to do the following:
@@ -50,10 +52,11 @@ In order to enable the motion sensor you will need to do the following:
 * You will need 2 resisitors
 * You will need Adafruit 3 pin motion sensor (https://www.adafruit.com/product/4871) <br>
 * You will need cardboard to cover the sides of the motion sensor due to high sensitivity
-* Have the first wire connected to GPIO PIN40 on the P9 header. This pin is where the motion sensor output will be sent to via A2D
+* Have the first wire connected to PIN40 on the P9 header. This pin is where the motion sensor output will be sent to via A2D
 * Have 2 wires that are connected to the ground 
 * Power wire connected to PIN3 on P9 header as above
 * The motion sensor has 3 pins to it. The first pin is where the 2 resistors should meet, this motion sensor pin is for the power. The second motion sensor pin is where the output wire (yellow) is connected to. The third motion sensor pin is for grounding the motion sensor where the second wire (blue) is connected to ground. The last wire (brown) is where the second resisitor's end point is which also connects to ground. The pictures and diagram below should show how to do the wiring. 
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/motionSensorWiring/20230329_200606.jpg" width="500" height="500">
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/motionSensorWiring/20230329_200621.jpg" width="500" height="500">
 <img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/motionSensorWiring/20230329_200638.jpg" width="500" height="500">
+<img src="https://github.com/Kreutonz/cmpt433-project/blob/Sumeet/motionSensorWiring/motionsensor.png" width="500" height="500">
