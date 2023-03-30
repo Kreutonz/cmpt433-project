@@ -9,6 +9,7 @@
 #include "udp.h"
 #include "potDriver.h"
 #include "ledController.h"
+#include "motionSensor.h"
 
 //***************************
 //    PRIVATE PROTOTYPES
@@ -41,7 +42,7 @@ static void init(void) {
     potDriver_init();
     UDP_init();
     LedController_init();
-
+    MotionSensor_init();
 }// init()
 
 
@@ -53,6 +54,7 @@ static void shutdown(void) {
     AudioController_shutdown();
     potDriver_shutdown();
     LedController_shutDown();
+    MotionSensor_shutDown();
 }// shutdown()
 
 
@@ -66,4 +68,5 @@ void AlarmClock_terminateThreads(void) {
     SegDisplay_setStatus(TERMINATE);
     TimeController_setStatus(TERMINATE);
     LedController_setStatus(TERMINATE);
+    MotionSensor_setStatus(TERMINATE);
 }// AlarmClock_terminateThreads()

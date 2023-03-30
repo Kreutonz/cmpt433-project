@@ -6,7 +6,7 @@ CC_C = $(CROSS_COMPILE)gcc
 
 CFLAGS = -Wall -g -std=c99 -D _POSIX_C_SOURCE=200809L -Werror -Wshadow -pthread
 LFLAGS = -L$(HOME)/cmpt433/public/asound_lib_BBB -Llib/mpg123 -lpthread -lasound -lmpg123
-CFILES =  alarmClock.c general.c joystick.c responses.c segDisplay.c timeController.c udp.c ledController.c audioControl.c potDriver.c textToSpeech.c
+CFILES =  alarmClock.c general.c joystick.c responses.c segDisplay.c timeController.c udp.c ledController.c audioControl.c potDriver.c textToSpeech.c motionSensor.c
 
 all: alarmClock wav_files web_app
 
