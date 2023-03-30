@@ -47,19 +47,6 @@ static void* checkAlarm(void* args) {
     General_sleepForMs(2000);
     while(status == RUNNING) {
         pthread_mutex_lock(&alarmMutex);
-        // int alarmInSec = TimeController_getAlarmInSeconds();
-        // int currentTimeInSec = (currentHours * SECS_TO_HOURS) + (currentMinutes * SECS_TO_MINS) + currentSeconds;
-        // if(currentTimeInSec >= alarmInSec && alarmInSec != 0) {
-        //     if (!isAlarmOn) {
-        //         isAlarmOn = true;
-        //         printf("TURN ON LIGHTS: %d\n", alarmInSec);
-        //         SoundHandler_playDefaultSound(Responses_getAlarmMode());
-        //         LedController_setAlarmStatus(ON);
-        //     } 
-        // } else {
-        //     isAlarmOn = false;
-        // }
-
         if (newAlarmTime.tm_hour == currentHours && newAlarmTime.tm_min == currentMinutes && newAlarmTime.tm_sec == currentSeconds) {
             isAlarmOn = true;
             printf("TURN ON LIGHTS\n");
