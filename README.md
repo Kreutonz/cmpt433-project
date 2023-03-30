@@ -27,11 +27,11 @@
 
 
 ### Once Alarm Sounds:
-| Input              | Action             |
-|:-------------------|:------------------:|
-|```Any Direction``` |Snooze              |
-|```Inwards```       |Shut off            |
-
+| Input                        | Action             |
+|:-----------------------------|:------------------:|
+|```Any Direction         ```  |Snooze              |
+|```Inwards               ```  |Shut off            |
+|```Waive Hand Over Sensor```  |Shut off            |   
 
 ### LEDS:
 In order to enable the two wired LEDs please do the following:
