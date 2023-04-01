@@ -30,8 +30,9 @@
 | Input                        | Action             |
 |:-----------------------------|:------------------:|
 |```Any Direction         ```  |Snooze              |
+|```Waive Hand Over Sensor```  |Snooze              | 
 |```Inwards               ```  |Shut off            |
-|```Waive Hand Over Sensor```  |Shut off            |   
+  
 
 ### LEDS:
 In order to enable the two wired LEDs please do the following:

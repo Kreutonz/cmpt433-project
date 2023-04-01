@@ -62,11 +62,11 @@ static void* takeMotionSensorReadings(void* args) {
         bool alarmStatus = TimeController_getAlarmStatus();
         if (alarmStatus && reading >= MOTION_THRESHOLD) {
             motionStatus = MOVEMENT;
-            printf("SHUTOFF ALARM\n");
+            printf("SNOOZE\n");
             TimeController_setAlarmStatus(false);
             LedController_setAlarmStatus(OFF);
             SoundHandler_playDefaultSound(STOP);
-            TimeController_resetAlarm();
+            TimeController_snoozeAlarm();
         } else {
             motionStatus = NO_MOVEMENT;
         }

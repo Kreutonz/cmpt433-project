@@ -226,5 +226,6 @@ void TimeController_snoozeAlarm() {
     time.tm_min = currentMinutes;
     time.tm_sec = currentSeconds + SNOOZE_IN_SEC;
     newAlarmTime = time;
+    printf("Snooze time: H: %d m: %d s: %d\n",time.tm_hour, time.tm_min , time.tm_sec);
     pthread_mutex_unlock(&alarmMutex);
 } // void TimeController_snoozeAlarm()
